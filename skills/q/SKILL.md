@@ -1,36 +1,37 @@
 ---
 name: q
-description: OPTIMAL EXECUTION PIPELINE v2 — dialectic synthesis + fact gate + self-correcting loop (improved /1).
+description: OPTIMAL EXECUTION PIPELINE v2 (bounded) - concise dialectic, fact gate, self-correcting loop.
 ---
 
-# /q — OPTIMAL EXECUTION PIPELINE (v2, improved /1)
+# /q - OPTIMAL EXECUTION PIPELINE (v2, bounded)
 
-## PHASE 1 — REASON & DEBATE
-- Decompose the problem: explicit constraints, implicit constraints, edge cases, dependencies, failure modes, and success criteria.
-- Generate at least 2 competing hypotheses / approaches.
-- DIALECTIC SYNTHESIS:
-  - Thesis: state the initial approach and why it seems best.
-  - Antithesis: attack it — strongest counter-argument, hidden risks, trade-offs, adversarial cases.
-  - Synthesis: adopt the stronger branch OR fuse both into a higher-order strategy that resolves the contradiction. Record which branch won and why.
-- FACT GATE: any fact, number, date, citation, or API signature → verify via web_search / web_fetch. Primary sources only (official docs, repos, papers). Reject SEO spam, affiliate hubs, content farms. If unconfirmed → label "unconfirmed".
+## PHASE 1 - REASON (concise)
+- Decompose: constraints, edge cases, deps, failure modes, success criteria - a few lines.
+- State ONE primary approach. Only if genuinely ambiguous, add ONE alternative (one line).
+- Optional dialectic (ONLY when a decision is truly contested): 1-line thesis, 1-line antithesis, 1-line synthesis. Do NOT write essays.
+- FACT GATE: any fact/number/date/citation/API signature -> verify via web_search/web_fetch. Primary sources only (official docs, repos, papers). Reject SEO spam, affiliate hubs, content farms. Unconfirmed -> label unconfirmed.
 
-## PHASE 2 — AUTONOMOUS ACTION
-- Execute tools immediately (run_command / read_file / write_file / list_files / web_search / web_fetch). No user confirmation for physical server actions.
-- Non-interactive shell only. No TTY prompts. Keep outputs minimal to conserve context.
+## PHASE 2 - AUTONOMOUS ACTION
+- Execute tools immediately (run_command/read_file/write_file/list_files/web_search/web_fetch). No user confirmation for server actions.
+- Non-interactive shell only. No TTY prompts.
 - Read before write. Inspect real state; never assume file contents or paths.
+- Minimal output (head/tail/grep/wc). Never dump full logs.
 
-## PHASE 3 — VERIFY & SELF-CORRECT
-- Verify empirically: code → run tests / linter / logs; facts → re-check the primary source; files → re-read and confirm.
-- On failure:
-  1. Save root cause via memory_save(type=feedback, tags=["failure-log", <domain>]).
-  2. Return to Phase 1, diagnose, adjust.
-  3. Re-execute Phase 2.
-- Before starting: check prior failure-logs from memory. Do NOT repeat known mistakes.
-- Do NOT stop until fully verified. Only return the final summary when the task is complete and confirmed functional.
+## PHASE 3 - VERIFY & SELF-CORRECT
+- Verify empirically: code -> tests/linter/logs; facts -> re-check primary source; files -> re-read and confirm.
+- On failure (max 2 retries per issue): memory_save(type=feedback, tags=[failure-log, domain]) -> adjust -> re-execute.
+- Check prior failure-logs first. Do NOT repeat known mistakes.
+
+## BUDGET & TERMINATION (hard)
+- Max 8 tool calls per turn. On cap: STOP, emit short progress summary, hand back.
+- Same failure twice -> STOP and report.
+- No state change / no new info -> STOP and summarize.
+- Never wait for user input mid-task, but never run unbounded.
 
 ## ANTI-HALLUCINATION
-- Uncertain fact → web_search. Cannot confirm → say "unconfirmed". Never invent numbers, paths, or citations.
-- Apply domain checklists from memory (e.g., market data: CVD, order book imbalance, depth skew, spoofing detection).
+- Uncertain fact -> web_search. Cannot confirm -> unconfirmed. Never invent numbers, paths, citations.
+- Apply domain checklists from memory (market data: CVD, order book imbalance, depth skew, spoofing detection).
 
-## TERMINATION
-- No mid-process halting, no waiting for user reassurance while the task is incomplete.
+## STALL RECOVERY
+- If stalled or about to repeat: emit 'PROGRESS: ... / BLOCKED: ...' and STOP.
+- A clean partial summary beats a stalled stream.
